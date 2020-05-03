@@ -2,7 +2,7 @@
 
 ## Motivation
 
-In today’s era, the analysis of real-time data is becoming critical for SMEs & Large Corporations alike. Industries such as Financial services, Legal services, IT operation management services, Marketing and Advertising, all require the analysis of massive amounts of real-time data as well as historical data in order to make business decisions.
+In today’s era, the analysis of real-time data is becoming critical for SMEs & Large Corporations alike. Industries such as Financial services, Legal services, IT operation management services, Marketing and Advertising all require the analysis of massive amounts of real-time data as well as historical data in order to make business decisions.
 
 Big data is defined by velocity, volume, and variety of the data; these characteristics make Big data different from
 regular data. Unlike regular big data applications, real-time data processing applications require building a distributed data pipeline for capturing, processing, storing, and analyzing the data efficiently.
@@ -51,7 +51,7 @@ Spark’s primary data abstraction is a distributed collection of items called a
 
 <i>RDD has several traits:</i>
 
-- Resilient, i.e. fault-tolerant with the help of RDD lineage graph and so able to recompute missing or damaged partitions due to node failures. Compared to Hadoop MapReduce, which persists data to disk after map or reduce action, achieve fault-tolerant by replicating same block of data three times on different nodes. This one of reason Spark faster than Hadoop MapReduce.
+- Resilient, i.e. fault-tolerant with the help of RDD lineage graph and so able to recompute missing or damaged partitions due to node failures. Compared to Hadoop MapReduce, which persists data to disk after map or reduce action, Spark achieves fault-tolerant by replicating same block of data three times on different nodes. This is one of the reasons why Spark is faster than Hadoop MapReduce.
 
 - Immutable or Read-Only, i.e. it does not change once created and can only be transformed using transformations to new RDDs.
 
