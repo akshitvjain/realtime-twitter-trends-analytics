@@ -75,10 +75,46 @@ Stateless transformations are simple RDD transformation being applied on every b
 
 Statefull transformation are operations on DStream that track data across time, that is, some data from previous batches is used to generate the results for a new batch.
 
+## Setup Data Pipeline and Dashboard
 
+1. Download [Zookeeper - 3.5.7](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz).
 
+2. Download [Apache Kafka - 2.4.0](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz).
 
+3. Clone the project repository.
 
-## Setup Instructions
-## Tools
-## Links
+4. Create a Twiter Developer account.
+
+5. Update the oAuth-tokens.txt in the input directory with the respective Twitter API keys and tokens.
+
+6. Start the zookeeper server: <b>/usr/local/zookeeper/bin/zkServer.sh start</b>
+
+7. Start kafka server: <b>/usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server.properties</b>
+
+8. Create a topic “tweets-1” in kafka:
+<b>/usr/local/kafka/bin/kafka-topics.sh –create –zookeeper localhost:2181 –replication-factor 1 –partitions 1 –topic tweets-1</b>
+
+9. Check if topic has been created: <b>/usr/local/kafka/bin/kafka-topics.sh –list –zookeeper localhost:2181</b>
+
+10. Start the MongoDB server!
+
+11. Run the KafkaTwitterProducer.java:
+
+![link](https://github.com/akshitvjain/realtime-twitter-trends-analytics/blob/master/images/producer-args.png)
+
+12. Next, run the KafkaSparkProcessor.scala:
+
+![link](https://github.com/akshitvjain/realtime-twitter-trends-analytics/blob/master/images/spark-args.png)
+
+13. Finally, configure and connect Tableau to MongoDB!
+
+## Tools + IDE
+
+- Apache Kafka 2.4.0
+- Apache Spark 2.4.1
+- MongoDB
+- Tableau Desktop
+- IntelliJ IDEA
+- Java 8
+- Scala 2.11.12
+
