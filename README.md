@@ -81,6 +81,8 @@ Statefull transformation are operations on DStream that track data across time, 
 
 2. Download [Apache Kafka - 2.4.0](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz).
 
+3. Download [Spark - 2.4.1 or later](https://spark.apache.org/downloads.html)
+
 3. Clone the project repository.
 
 4. Create a Twiter Developer account.
