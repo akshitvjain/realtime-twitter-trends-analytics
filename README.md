@@ -13,9 +13,9 @@ This personal project is a means for me to apply the theory of large-scale paral
 
 Twitter streaming trends popularity and sentiment analysis is an excellent choice for building a distributed data pipeline. Every day around 500 million tweets (as of October, 2019) are produced from all over the world, and around 1% of them are publicly available, that is 5 millions tweets. 
 
-The data pipeline uses <b>Apache Kafka</b> as data ingestion system, <b>Apache Spark</b> as a real-time data processing system, <b>MySQL</b> for distributed storage, and <b>Tableau</b> for creating live dashboard for data analysis.
+The data pipeline uses <b>Apache Kafka</b> as data ingestion system, <b>Apache Spark</b> as a real-time data processing system, <b>MySQL</b> database for distributed storage, and <b>Tableau</b> for creating live dashboard for data analysis.
 
-The Twitter data is acquired using Twitter Streaming API and is streamed to Kafka which makes it available for Spark that performs data processing and sentiment classification and stores the results into MySQL. The popularity and sentiment of the trends are analyzed through a Tableau dasboard.
+The Twitter data is acquired using Twitter Streaming API and is streamed to Kafka which makes it available for Spark that performs data processing and sentiment classification and stores the results into a MySQL database. The popularity and sentiment of the trends are analyzed through a Tableau dasboard.
 
 <b>Note:</b> It would have been a better choice to opt for a NoSQL database such as, MongoDB or Apache Cassandra for its scalability and flexibility. However, there is no obvious way to connect to Tableau using these storage systems. Tableau requires an ODBC connector which is provided by third-party providers at a fee. Moreover, the new MongoDB BI Connector by Tableau leverages the MySQL wire protocol to translate MongoDB’s JSON structure into a flattened relational structure. The end result of the connector is a sort of virtual MySQL database, which you can interact with just like any other MySQL database. 
 For a more complex big data application, it would be a better bet to invest in a storage system that scales-out horizontally.
@@ -24,11 +24,11 @@ For a more complex big data application, it would be a better bet to invest in a
 
 ![link](https://github.com/akshitvjain/realtime-twitter-trends-analytics/blob/master/images/pipeline-architecture.png)
 
-Kafka twitter streaming producer publishes streaming tweets to the ‘tweets-1’ topic in an Apache Kafka broker; the Apache Spark Streaming Context is subscribed to read the tweets from the 'tweets-1' topic. The Spark engine leverages Spark Streaming to perform batch processing on incoming tweets, and performs sentiment classification before storing the processed results in MySQL. Tableau connects to MySQL to retrieve the results and creates a live dashboard to analyze popularity and sentiment of trending topics on Twitter.
+Kafka twitter streaming producer publishes streaming tweets to the ‘tweets-1’ topic in an Apache Kafka broker; the Apache Spark Streaming Context is subscribed to read the tweets from the 'tweets-1' topic. The Spark engine leverages Spark Streaming to perform batch processing on incoming tweets, and performs sentiment classification before storing the processed results in the MySQL database. Tableau connects to MySQL Server to retrieve the results and creates a live dashboard to analyze popularity and sentiment of trending topics on Twitter.
 
 ## System Design
 
-The different components of the data pipeline, Kafka Twitter Streaming Producer, Apache Kafka, Apache Spark Streaming, MySQL and Tableau are run locally.
+The different components of the data pipeline, Kafka Twitter Streaming Producer, Apache Kafka, Apache Spark Streaming, MySQL Server and Tableau are run locally.
 
 <b> Kafka Twitter Streaming Producer: </b>
 
@@ -74,7 +74,7 @@ Any operation applied on a DStream translates to operations on the underlying RD
 
 The major part of the data processing required a series of transformations on input of raw streaming tweets for sentiment classification. The transformation on DStreams can be grouped into either stateless or stateful.
 
-Stateless transformations are simple RDD transformation being applied on every batch, that is, every RDD in a DStream, such as map(), flatMap(), filter(), reducedByKey() and so on. Stateless transformations were used to filter emoticons, hyperlinks and non alphanumeric characters in each tweet, map each tweet to tuple format of (timestamp, tag, sentiment-score, sentiment-type, country) before converting the stream of RDDs to a Spark Dataframe and writing to MongoDB.
+Stateless transformations are simple RDD transformation being applied on every batch, that is, every RDD in a DStream, such as map(), flatMap(), filter(), reducedByKey() and so on. Stateless transformations were used to filter emoticons, hyperlinks and non alphanumeric characters in each tweet, map each tweet to tuple format of (timestamp, tag, sentiment-score, sentiment-type, country) before converting the stream of RDDs to a Spark Dataframe and writing to MySQL database.
 
 Statefull transformation are operations on DStream that track data across time, that is, some data from previous batches is used to generate the results for a new batch.
 
@@ -101,7 +101,7 @@ Statefull transformation are operations on DStream that track data across time, 
 
 9. Check if topic has been created: <b>/usr/local/kafka/bin/kafka-topics.sh –list –zookeeper localhost:2181</b>
 
-10. Start the MySQL server!
+10. Start the MySQL Server!
 
 11. Create a database "twitter"
 
@@ -113,13 +113,13 @@ Statefull transformation are operations on DStream that track data across time, 
 
 ![link](https://github.com/akshitvjain/realtime-twitter-trends-analytics/blob/master/images/spark-args.png)
 
-14. Finally, configure and connect Tableau to MySQL!
+14. Finally, configure and connect Tableau to MySQL Server!
 
 ## Tools + IDE
 
 - Apache Kafka 2.4.0
 - Apache Spark 2.4.1
-- MongoDB
+- MySQL Server
 - Tableau Desktop
 - IntelliJ IDEA
 - Java 8
