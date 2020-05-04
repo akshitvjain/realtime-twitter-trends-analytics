@@ -103,7 +103,7 @@ Statefull transformation are operations on DStream that track data across time, 
 
 8. Create a topic “tweets-1” in kafka:
 ```bash
-usr/local/kafka/bin/kafka-topics.sh –create –zookeeper localhost:2181 –replication-factor 1 –partitions 1 –topic tweets-1</b>
+usr/local/kafka/bin/kafka-topics.sh –create –zookeeper localhost:2181 –replication-factor 1 –partitions 1 –topic tweets-1
 ```
 
 9. Check if topic has been created: 
