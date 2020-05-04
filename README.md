@@ -80,11 +80,9 @@ Statefull transformation are operations on DStream that track data across time, 
 
 ## Setup Data Pipeline and Dashboard
 
-1. Download [Zookeeper - 3.5.7](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz).
+1. Download [Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz), [Apache Kafka](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz) and [Apache Spark](https://spark.apache.org/downloads.html).
 
-2. Download [Apache Kafka - 2.4.0](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz).
-
-3. Download [Spark - 2.4.1 or later](https://spark.apache.org/downloads.html)
+2. [Insturctions to Setup Spark Development Environment](https://kaizen.itversity.com/setup-development-environment-intellij-and-scala-big-data-hadoop-and-spark/) (Optional).
 
 3. Clone the project repository.
 
@@ -92,14 +90,26 @@ Statefull transformation are operations on DStream that track data across time, 
 
 5. Update the oAuth-tokens.txt in the input directory with the respective Twitter API keys and tokens.
 
-6. Start the zookeeper server: <b>/usr/local/zookeeper/bin/zkServer.sh start</b>
+6. Start the zookeeper server: 
 
-7. Start kafka server: <b>/usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server.properties</b>
+```bash
+/usr/local/zookeeper/bin/zkServer.sh start
+```
+
+7. Start kafka server: 
+```bash
+/usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server.properties
+```
 
 8. Create a topic “tweets-1” in kafka:
-<b>/usr/local/kafka/bin/kafka-topics.sh –create –zookeeper localhost:2181 –replication-factor 1 –partitions 1 –topic tweets-1</b>
+```bash
+usr/local/kafka/bin/kafka-topics.sh –create –zookeeper localhost:2181 –replication-factor 1 –partitions 1 –topic tweets-1</b>
+```
 
-9. Check if topic has been created: <b>/usr/local/kafka/bin/kafka-topics.sh –list –zookeeper localhost:2181</b>
+9. Check if topic has been created: 
+```bash
+/usr/local/kafka/bin/kafka-topics.sh –list –zookeeper localhost:2181
+```
 
 10. Start the MySQL Server!
 
