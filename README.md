@@ -44,6 +44,8 @@ Since all the critical information is stored in Zookeeper and it normally replic
 
 This project was configured to have one kafka broker and one zookeeper instance respectively. It is mainly used as a queue to publish raw streaming tweets for processing. It maintained one topic in this project, ‘tweets-1’.
 
+More partitions in a Kafka cluster leads to higher throughput however, higher number of partitions have an impact on availability and latency as well. Therefore, it is best to run a single consumer over a topic with 5, 10, 15, ... partitions; measure the impact and pick the configuration that meets the requirements. At the end of the day, if you need more partitions you should not worry about re-balancing.
+
 <b> Apache Spark: </b>
 
 <i>Spark Core - </i>
