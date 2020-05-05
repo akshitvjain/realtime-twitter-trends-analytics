@@ -22,6 +22,7 @@ import org.apache.spark.rdd.RDD
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
+import scala.util.matching.Regex
 
 
 object KafkaSparkProcessor {
@@ -64,7 +65,7 @@ object KafkaSparkProcessor {
     val Array(topics) = args
 
     // Set the Spark StreamingContext to create a DStream for every 30 seconds
-    val ssc = new StreamingContext(sc, Seconds(30))
+    val ssc = new StreamingContext(sc, Seconds(15))
     ssc.checkpoint("checkpoint")
 
     // Setup a stream to read messages from the Kafka topic
@@ -101,7 +102,7 @@ object KafkaSparkProcessor {
         val newRDD = rdd.map(r =>
           Row(( time.milliseconds / 1000).toInt, r._1, r._2, r._3, r._4))
         val df = spark.createDataFrame(newRDD, schema).cache()
-        val process_df = df.dropDuplicates(Seq("timestamp", "hashtag", "location"))
+        val process_df = df.dropDuplicates(Seq("timestamp", "hashtag", "country"))
         process_df.show()
         writeToMySQL(process_df, counter)
         counter += 1
@@ -185,9 +186,14 @@ object KafkaSparkProcessor {
   def _getCountryInfo(location: String): String = {
     var country = "NULL"
     if (location.contains(",")) {
-      val locObj = location.split(",")
-      country = locObj(locObj.length - 1).replaceAll("\\s", "")
-      if (country.length == 2) {
+      val locArray = location.split(",")
+      country = locArray(locArray.length - 1)
+      val cleanCountry = country
+          .replaceAll("\\s", "")
+          .replaceAll("[^a-zA-Z.,]", "")
+      if (cleanCountry.length == 2 ||
+          cleanCountry == "US" ||
+          cleanCountry.contains("States")) {
         country = "USA"
       }
     }
@@ -198,16 +204,21 @@ object KafkaSparkProcessor {
 
     val metricsStream = tweets.flatMap { eTweet => {
       val retList = ListBuffer[String]()
+      // Process each tweet
       for (tag <- eTweet.split(" ")) {
         if (tag.startsWith("#") && tag.replaceAll("\\s", "").length > 1) {
           val tweetObj = eTweet.split(" /TLOC/ ")
+          // Function call to extract country associated with the tweet
           val country = _getCountryInfo(tweetObj(0))
+          // Clean hashtags, emoji's, hyperlinks, and twitter tags
+          // which can confuse the model. Replace @mention with generic word Foo
           val tweet_clean = tweetObj(1)
-            .replaceAll("(\\b\\w*RT)|[^a-zA-Z0-9\\s.,!@]", "")
-            .replaceAll("(http\\S+)", "")
-            .replaceAll("(@\\w+)", "Foo")
-            .replaceAll("^(Foo)", "")
+              .replaceAll("(\\b\\w*RT)|[^a-zA-Z0-9\\s.,!@]", "")
+              .replaceAll("(http\\S+)", "")
+              .replaceAll("(@\\w+)", "Foo")
+              .replaceAll("^(Foo)", "")
           try {
+            // Function call to detect the tweet sentiment
             val (sentimentScore, sentimentType) = _detectSentiment(tweet_clean)
             retList += (tag + " /TLOC/ " + sentimentScore + " /TLOC/ " +
               sentimentType.toString.toLowerCase + " /TLOC/ " + country)

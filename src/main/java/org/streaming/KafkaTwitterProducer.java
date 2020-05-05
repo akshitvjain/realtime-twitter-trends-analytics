@@ -104,6 +104,7 @@ public class KafkaTwitterProducer {
                     location = ret.getUser().getLocation();
                     System.out.println("Tweet:" + tweet);
                     System.out.println("Location: " + location);
+                    // Use /TLOC/ as a separator pattern
                     msg = location + " /TLOC/ " + tweet;
                 }
                 producer.send(new ProducerRecord<String, String>(topic, Integer.toString(j++), msg));
