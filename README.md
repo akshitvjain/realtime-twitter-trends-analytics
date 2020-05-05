@@ -1,5 +1,7 @@
 # Real-Time Data Pipeline for Twitter Trends Analysis
 
+![](https://github.com/akshitvjain/realtime-twitter-trends-analytics/blob/master/images/realtime-twitter-dashboard.gif)
+
 ## Motivation
 
 In today’s era, the analysis of real-time data is becoming critical for SMEs & Large Corporations alike. Industries such as Financial services, Legal services, IT operation management services, Marketing and Advertising all require the analysis of massive amounts of real-time data as well as historical data in order to make business decisions.
@@ -15,7 +17,7 @@ Twitter streaming trends popularity and sentiment analysis is an excellent choic
 
 The data pipeline uses <b>Apache Kafka</b> as data ingestion system, <b>Apache Spark</b> as a real-time data processing system, <b>MySQL</b> database for distributed storage, and <b>Tableau</b> for creating live dashboard for data analysis.
 
-The Twitter data is acquired using Twitter Streaming API and is streamed to Kafka which makes it available for Spark that performs data processing and sentiment classification and stores the results into a MySQL database. The popularity and sentiment of the trends are analyzed through a Tableau dasboard.
+The Twitter data is acquired using Twitter Streaming API and is streamed to Kafka which makes it available for Spark that performs data processing and sentiment classification and stores the results into a MySQL database. The popularity and sentiment of the trends are analyzed through a Tableau dashboard.
 
 <b>Note:</b> It would have been a better choice to opt for a NoSQL database such as, MongoDB or Apache Cassandra for its scalability and flexibility. However, there is no obvious way to connect to Tableau using these storage systems. Tableau requires an ODBC connector which is provided by third-party providers at a fee. Moreover, the new MongoDB BI Connector by Tableau leverages the MySQL wire protocol to translate MongoDB’s JSON structure into a flattened relational structure. The end result of the connector is a sort of virtual MySQL database, which you can interact with just like any other MySQL database. 
 For a more complex big data application, it would be a better bet to invest in a storage system that scales-out horizontally.
