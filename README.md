@@ -15,22 +15,21 @@ This personal project is a means for me to apply the theory of large-scale paral
 
 Twitter streaming trends popularity and sentiment analysis is an excellent choice for building a distributed data pipeline. Every day around 500 million tweets (as of October, 2019) are produced from all over the world, and around 1% of them are publicly available, that is 5 millions tweets. 
 
-The data pipeline uses <b>Apache Kafka</b> as data ingestion system, <b>Apache Spark</b> as a real-time data processing system, <b>MySQL</b> database for distributed storage, and <b>Tableau</b> for creating live dashboard for data analysis.
+The data pipeline uses <b>Apache Kafka</b> as a data ingestion system, <b>Apache Spark</b> as a real-time data processing system, <b>MongoDB</b> for distributed storage and retrieval, and Apache Drill to connect the storage system with <b>Tableau</b> for real-time analytics.
 
-The Twitter data is acquired using Twitter Streaming API and is streamed to Kafka which makes it available for Spark that performs data processing and sentiment classification and stores the results into a MySQL database. The popularity and sentiment of the trends are analyzed through a Tableau dashboard.
+The Twitter data is acquired using Twitter Streaming API and is streamed to Kafka which makes it available for Spark that performs data processing and sentiment classification and stores the results into MongoDB. The popularity and sentiment of the trends are analyzed through a Tableau dashboard.
 
-<b>Note:</b> It would have been a better choice to opt for a NoSQL database such as, MongoDB or Apache Cassandra for its scalability and flexibility. However, there is no obvious way to connect to Tableau using these storage systems. Tableau requires an ODBC connector which is provided by third-party providers at a fee. Moreover, the new MongoDB BI Connector by Tableau leverages the MySQL wire protocol to translate MongoDB’s JSON structure into a flattened relational structure. The end result of the connector is a sort of virtual MySQL database, which you can interact with just like any other MySQL database. 
-For a more complex big data application, it would be a better bet to invest in a storage system that scales-out horizontally.
+<b>Note:</b> Apache Drill connects MongoDB with Tableau. More on Drill later.
 
 ## Data Architecture
 
 ![link](https://github.com/akshitvjain/realtime-twitter-trends-analytics/blob/master/images/pipeline-architecture.png)
 
-Kafka twitter streaming producer publishes streaming tweets to the ‘tweets-1’ topic in an Apache Kafka broker; the Apache Spark Streaming Context is subscribed to read the tweets from the 'tweets-1' topic. The Spark engine leverages Spark Streaming to perform batch processing on incoming tweets, and performs sentiment classification before storing the processed results in the MySQL database. Tableau connects to MySQL Server to retrieve the results and creates a live dashboard to analyze popularity and sentiment of trending topics on Twitter.
+Kafka twitter streaming producer publishes streaming tweets to the ‘tweets-1’ topic in an Apache Kafka broker; the Apache Spark Streaming Context is subscribed to read the tweets from the 'tweets-1' topic. The Spark engine leverages Spark Streaming to perform batch processing on incoming tweets, and performs sentiment classification before storing the processed results in the MongoDB. Drill connects MongoDB to Tableau; the realtime data is used to create a live dashboard to analyze popularity and sentiment of trending topics on Twitter.
 
 ## System Design
 
-The different components of the data pipeline, Kafka Twitter Streaming Producer, Apache Kafka, Apache Spark Streaming, MySQL Server and Tableau are run locally.
+The different components of the data pipeline, Kafka Twitter Streaming Producer, Apache Kafka, Apache Spark Streaming, MongoDB, Apache Drill and Tableau are all run locally for development.
 
 <b> Kafka Twitter Streaming Producer: </b>
 
@@ -78,9 +77,15 @@ Any operation applied on a DStream translates to operations on the underlying RD
 
 The major part of the data processing required a series of transformations on input of raw streaming tweets for sentiment classification. The transformation on DStreams can be grouped into either stateless or stateful.
 
-Stateless transformations are simple RDD transformation being applied on every batch, that is, every RDD in a DStream, such as map(), flatMap(), filter(), reducedByKey() and so on. Stateless transformations were used to filter emoticons, hyperlinks and non alphanumeric characters in each tweet, map each tweet to tuple format of (timestamp, tag, sentiment-score, sentiment-type, country) before converting the stream of RDDs to a Spark Dataframe and writing to MySQL database.
+Stateless transformations are simple RDD transformation being applied on every batch, that is, every RDD in a DStream, such as map(), flatMap(), filter(), reducedByKey() and so on. Stateless transformations were used to filter emoticons, hyperlinks and non alphanumeric characters in each tweet, map each tweet to tuple format of (timestamp, tag, sentiment-score, sentiment-type, country) before converting the stream of RDDs to a Spark Dataframe and writing to MongoDB.
 
 Statefull transformation are operations on DStream that track data across time, that is, some data from previous batches is used to generate the results for a new batch.
+
+<b> Apache Drill: </b>
+
+Apache Drill is an open-source SQL execution engine that makes it possible to use SQL to query non-relational databases and file systems. This includes joins between these systems – for example, Drill could allow a user to join ecommerce data stored in Elasticsearch with web analytics data stored in a Hadoop cluster. It also supports data-intensive distributed applications for interactive analysis of large-scale datasets. 
+
+In this project Drill is mainly used to integrate MongoDB with Tableau. 
 
 ## Setup Data Pipeline and Dashboard
 
@@ -133,7 +138,8 @@ Statefull transformation are operations on DStream that track data across time, 
 
 - Apache Kafka 2.4.0
 - Apache Spark 2.4.1
-- MySQL Server
+- Apache Drill 1.17.0
+- MongoDB
 - Tableau Desktop
 - IntelliJ IDEA
 - Java 8
