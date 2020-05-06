@@ -15,7 +15,7 @@ This personal project is a means for me to apply the theory of large-scale paral
 
 Twitter streaming trends popularity and sentiment analysis is an excellent choice for building a distributed data pipeline. Every day around 500 million tweets (as of October, 2019) are produced from all over the world, and around 1% of them are publicly available, that is 5 millions tweets. 
 
-The data pipeline uses <b>Apache Kafka</b> as a data ingestion system, <b>Apache Spark</b> as a real-time data processing system, <b>MongoDB</b> for distributed storage and retrieval, and Apache Drill to connect the storage system with <b>Tableau</b> for real-time analytics.
+The data pipeline uses <b>Apache Kafka</b> as a data ingestion system, <b>Apache Spark</b> as a real-time data processing system, <b>MongoDB</b> for distributed storage and retrieval, and <b>Apache Drill</b> to connect MongoDB with <b>Tableau</b> for real-time analytics.
 
 The Twitter data is acquired using Twitter Streaming API and is streamed to Kafka which makes it available for Spark that performs data processing and sentiment classification and stores the results into MongoDB. The popularity and sentiment of the trends are analyzed through a Tableau dashboard.
 
