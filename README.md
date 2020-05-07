@@ -87,7 +87,8 @@ Apache Drill is an open-source SQL execution engine that makes it possible to us
 
 In this project Drill is mainly used to integrate MongoDB with Tableau. 
 
-## Setup Data Pipeline and Dashboard
+## Instructions to Setup Data Pipeline and Dashboard
+(Setup instructions for development and testing on local machine.)
 
 1. Download [Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz), [MongoDB](https://docs.mongodb.com/guides/server/install/), [Apache Kafka](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz), [Apache Spark](https://spark.apache.org/downloads.html) and [Apache Drill](https://drill.apache.org/docs/installing-drill-on-linux-and-mac-os-x/)
 
