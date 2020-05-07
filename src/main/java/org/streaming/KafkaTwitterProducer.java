@@ -99,7 +99,7 @@ public class KafkaTwitterProducer {
             }
             else {
                 String location = "";
-                if (ret.getUser().getLocation() != null && ret.getHashtagEntities() != null) {
+                if (ret.getUser().getLocation() != null && ret.getHashtagEntities().length > 0) {
                     String tweet = ret.getText();
                     location = ret.getUser().getLocation();
                     System.out.println("Tweet:" + tweet);

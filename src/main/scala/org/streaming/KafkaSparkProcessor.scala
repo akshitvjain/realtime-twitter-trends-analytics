@@ -4,6 +4,7 @@ import java.io.IOException
 import java.sql.DriverManager
 import com.mongodb.MongoClient
 import java.util.Properties
+import twitter4j.TwitterObjectFactory
 
 import org.apache.spark.SparkContext
 import org.apache.spark.streaming.{Seconds, StreamingContext}
@@ -85,6 +86,8 @@ object KafkaSparkProcessor {
       createDirectStream[String, String](ssc, PreferConsistent,
         Subscribe[String, String](topicSet, kafkaParams))
     val tweets = stream.map(record => record.value).cache()
+
+
 
     //val hashTagCountRDD = getHashTagCounts(tweets).cache()
     //val htInfoRDD = hashTagCountRDD.join(hashTagSentimentRDD)
