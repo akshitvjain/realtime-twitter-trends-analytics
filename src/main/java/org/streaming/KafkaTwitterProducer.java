@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static javafx.application.Platform.exit;
-
 public class KafkaTwitterProducer {
 
     public static void main(String[] args) throws Exception {
@@ -111,6 +109,7 @@ public class KafkaTwitterProducer {
                 }
                 producer.send(new ProducerRecord<String, String>(topic, Integer.toString(j++), msg));
             }
+            Thread.sleep(100);
         }
     }
 

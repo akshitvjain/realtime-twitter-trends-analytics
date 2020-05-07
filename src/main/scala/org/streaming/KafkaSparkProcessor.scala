@@ -2,6 +2,7 @@ package org.streaming
 
 import java.io.IOException
 import java.sql.DriverManager
+import com.mongodb.MongoClient
 import java.util.Properties
 
 import org.apache.spark.SparkContext
@@ -22,6 +23,7 @@ import org.apache.spark.util.LongAccumulator
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
+
 
 object KafkaSparkProcessor {
 
@@ -96,16 +98,22 @@ object KafkaSparkProcessor {
       .add(StructField("sentiment-type", StringType, nullable = true))
       .add(StructField("country", StringType, nullable = true))
 
+    val counter = sc.longAccumulator("counter")
     hashTagSentimentRDD.foreachRDD((rdd: RDD[(String, Double, String, String)],
                                     time: org.apache.spark.streaming.Time) => {
       try {
         val newRDD = rdd.map(r =>
           Row(( time.milliseconds / 1000).toInt, r._1, r._2, r._3, r._4))
         val df = spark.createDataFrame(newRDD, schema).cache()
+        if (counter.isZero) {
+          updateDB()
+        }
+        counter.add(1)
         val process_df = df.dropDuplicates(Seq("timestamp", "hashtag", "country"))
         process_df.show()
         //writeToMySQL(process_df, counter)
-        process_df.repartition(5).write.format("mongo")
+
+        process_df.repartition(10).write.format("mongo")
           .mode("append").save()
       }
       catch {
@@ -190,15 +198,12 @@ object KafkaSparkProcessor {
       val locArray = location.split(",")
       country = locArray(locArray.length - 1)
       val cleanCountry = country
-          .replaceAll("\\s", "")
-          .replaceAll("[^a-zA-Z.,]", "")
-      if (cleanCountry.length == 2 ||
-          cleanCountry == "US" ||
-          cleanCountry.contains("States")) {
+        .replaceAll("""[\p{Punct}&&[^a-zA-Z]]]""", "")
+      if (cleanCountry.trim().length == 2 && locArray.length == 2) {
         country = "USA"
       }
     }
-    country
+    country.trim().toUpperCase()
   }
 
   def processTweet(tweets: DStream[String]): DStream[(String, Double, String, String)] = {
@@ -273,4 +278,14 @@ object KafkaSparkProcessor {
     // write or append data to MySql table
     df.repartition(10).write.mode(saveMode = "append").jdbc(url, tableName, properties)
   }
+
+  def updateDB() : Unit = {
+    val mongo = new MongoClient("localhost", 27017)
+    val database = mongo.getDatabase("twitter")
+    database.drop()
+    println("Database deleted successfully")
+    mongo.close()
+  }
+
+
 }
