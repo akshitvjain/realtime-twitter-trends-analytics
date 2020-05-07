@@ -89,13 +89,13 @@ In this project Drill is mainly used to integrate MongoDB with Tableau.
 
 ## Setup Data Pipeline and Dashboard
 
-1. Download [Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz), [Apache Kafka](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz), [Apache Spark](https://spark.apache.org/downloads.html) and Download [Drill](https://drill.apache.org/docs/installing-drill-on-linux-and-mac-os-x/)
+1. Download [Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz), [MongoDB](https://docs.mongodb.com/guides/server/install/), [Apache Kafka](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz), [Apache Spark](https://spark.apache.org/downloads.html) and [Apache Drill](https://drill.apache.org/docs/installing-drill-on-linux-and-mac-os-x/)
 
 2. [Insturctions to Setup Spark Development Environment](https://kaizen.itversity.com/setup-development-environment-intellij-and-scala-big-data-hadoop-and-spark/) (Optional).
 
 3. Clone the project repository.
 
-4. Create a Twiter Developer account.
+4. Create a Twiter developer account - More information can be found [here](https://developer.twitter.com/en/apply-for-access).
 
 5. Update the oAuth-tokens.txt in the input directory with the respective Twitter API keys and tokens.
 
