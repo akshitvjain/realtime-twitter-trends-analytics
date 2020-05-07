@@ -89,7 +89,7 @@ In this project Drill is mainly used to integrate MongoDB with Tableau.
 
 ## Setup Data Pipeline and Dashboard
 
-1. Download [Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz), [Apache Kafka](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz) and [Apache Spark](https://spark.apache.org/downloads.html).
+1. Download [Zookeeper](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz), [Apache Kafka](https://archive.apache.org/dist/kafka/2.4.0/kafka_2.12-2.4.0.tgz), [Apache Spark](https://spark.apache.org/downloads.html) and Download [Drill](https://drill.apache.org/docs/installing-drill-on-linux-and-mac-os-x/)
 
 2. [Insturctions to Setup Spark Development Environment](https://kaizen.itversity.com/setup-development-environment-intellij-and-scala-big-data-hadoop-and-spark/) (Optional).
 
@@ -120,9 +120,14 @@ In this project Drill is mainly used to integrate MongoDB with Tableau.
 /usr/local/kafka/bin/kafka-topics.sh –list –zookeeper localhost:2181
 ```
 
-10. Start the MySQL Server!
+10. Start MongoDB Server
 
-11. Create a database "twitter"
+11. Start Apache Drill daemon in distributed mode - More information can be found [here](https://drill.apache.org/docs/starting-drill-in-distributed-mode/)
+```bash
+bin/drillbit.sh start
+```
+
+12. Enable MongoDB Storage Plugin using Drill's WebUI console - More information can be found [here](https://drill.apache.org/docs/mongodb-storage-plugin/)
 
 12. Run the KafkaTwitterProducer.java:
 
@@ -132,7 +137,7 @@ In this project Drill is mainly used to integrate MongoDB with Tableau.
 
 ![link](https://github.com/akshitvjain/realtime-twitter-trends-analytics/blob/master/images/spark-args.png)
 
-14. Finally, configure and connect Tableau to MySQL Server!
+14. Finally, configure and connect Tableau to MongoDB using Apache Drill - More information can be found [here](https://help.tableau.com/current/pro/desktop/en-us/examples_apachedrill.htm)
 
 ## Tools + IDE
 
