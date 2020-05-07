@@ -12,18 +12,16 @@ import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.sql.types.{DoubleType, IntegerType, StringType, StructField, StructType}
 import org.apache.spark.streaming.dstream.DStream
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import edu.stanford.nlp.ling.CoreAnnotations
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations
 import edu.stanford.nlp.pipeline.StanfordCoreNLP
 import edu.stanford.nlp.sentiment._
 import org.apache.spark.rdd.RDD
+import org.apache.spark.util.LongAccumulator
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
-import scala.util.matching.Regex
-
 
 object KafkaSparkProcessor {
 
@@ -31,6 +29,8 @@ object KafkaSparkProcessor {
     .builder()
     .master("local[6]")
     .appName("Twitter Processor")
+    .config("spark.mongodb.input.uri", "mongodb://localhost/twitter.realtime_trends")
+    .config("spark.mongodb.output.uri", "mongodb://localhost/twitter.realtime_trends")
     .getOrCreate()
   spark.conf.set("spark.executor.memory", "5g")
 
@@ -80,7 +80,8 @@ object KafkaSparkProcessor {
     val topicSet = topics.split(",").toSet
 
     val stream = KafkaUtils.
-      createDirectStream[String, String](ssc, PreferConsistent, Subscribe[String, String](topicSet, kafkaParams))
+      createDirectStream[String, String](ssc, PreferConsistent,
+        Subscribe[String, String](topicSet, kafkaParams))
     val tweets = stream.map(record => record.value).cache()
 
     //val hashTagCountRDD = getHashTagCounts(tweets).cache()
@@ -95,7 +96,6 @@ object KafkaSparkProcessor {
       .add(StructField("sentiment-type", StringType, nullable = true))
       .add(StructField("country", StringType, nullable = true))
 
-    var counter = 0
     hashTagSentimentRDD.foreachRDD((rdd: RDD[(String, Double, String, String)],
                                     time: org.apache.spark.streaming.Time) => {
       try {
@@ -104,8 +104,9 @@ object KafkaSparkProcessor {
         val df = spark.createDataFrame(newRDD, schema).cache()
         val process_df = df.dropDuplicates(Seq("timestamp", "hashtag", "country"))
         process_df.show()
-        writeToMySQL(process_df, counter)
-        counter += 1
+        //writeToMySQL(process_df, counter)
+        process_df.repartition(5).write.format("mongo")
+          .mode("append").save()
       }
       catch {
         case e: Exception => e.printStackTrace()
@@ -247,7 +248,7 @@ object KafkaSparkProcessor {
     processedTweet
   }
 
-  def writeToMySQL(df: DataFrame, counter: Int): Unit = {
+  def writeToMySQL(df: DataFrame, counter: LongAccumulator): Unit = {
 
     // define jdbc connection parameters
     val tableName = "realtime_trends"
@@ -259,7 +260,7 @@ object KafkaSparkProcessor {
     properties.setProperty("driver", "com.mysql.cj.jdbc.Driver")
 
     // drop table if exists
-    if (counter == 0) {
+    if (counter.value == 0) {
       val conn = DriverManager.getConnection(url, "root", "password")
       println("Deleting table in given database...")
       val stmt = conn.createStatement
