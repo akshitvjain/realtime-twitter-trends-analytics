@@ -67,7 +67,7 @@ object KafkaSparkProcessor {
     // Pass kafka topic name
     val Array(topics) = args
 
-    // Set the Spark StreamingContext to create a DStream for every 30 seconds
+    // Set the Spark StreamingContext to create a DStream for every 15 seconds
     val ssc = new StreamingContext(sc, Seconds(15))
     ssc.checkpoint("checkpoint")
 
